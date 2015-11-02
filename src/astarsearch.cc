@@ -10,7 +10,7 @@ AStarSearch::AStarSearch(NodeState start, NodeState goal, int n){
 }
 
 float AStarSearch::goal_distance_estimate(vector<int> state){
-   return manhattan_distance(state);
+   return hamming_distance(state);
 }
 
 float AStarSearch::manhattan_distance(vector<int> state){
@@ -44,14 +44,14 @@ bool AStarSearch::is_goal(NodeState node){
 
 void AStarSearch::get_sucessors(){
     int k = this->current_node_.blank_pos_;
-    if (k+1 < this->n_*this->n_ && k+1 >= 0){
+    if (((k+1)%n_) &&  k+1 < this->n_*this->n_ && k+1 >= 0){
         vector<int> vec(this->current_node_.state_);
         swap(vec[k+1],vec[k]);
         float distance = goal_distance_estimate(vec);
         NodeState node(vec, this->current_node_.g_ + 1, distance, k+1,"direita");
         add_sucessor(node);
     }
-    if (k-1 < this->n_*this->n_ && k-1 >= 0){
+    if ((k%n_) && (k-1 < this->n_*this->n_) && (k-1 >= 0)){
         vector<int> vec(this->current_node_.state_);
         swap(vec[k-1],vec[k]);
         float distance = goal_distance_estimate(vec);
@@ -95,14 +95,14 @@ void AStarSearch::add_sucessor(NodeState node){
 }
 
 void AStarSearch::print_solution(){
-    cout << current_node_.label_  << " ";
+    cout << current_node_.label_  << " " << "Depth: " << current_node_.g_  << " ";
     for (auto v: current_node_.state_){
         cout << v << " ";
     }
     cout << endl;
     NodeState *node = current_node_.parent_;
     while (node->label_ != "start"){
-        cout << node->label_ << " ";
+        cout << node->label_ << " " << "Depth: " << node->g_  << " ";
         for (auto v : node->state_){
             cout << v << " ";
         }
@@ -114,6 +114,7 @@ void AStarSearch::print_solution(){
         cout << v << " ";
     }
     cout << endl;
+    cout << "Close list length: " << close_.size() << endl;
 }
 
 void AStarSearch::set_start(NodeState start){
@@ -145,7 +146,7 @@ SearchState AStarSearch::search_step(){
         } else {
             get_sucessors();
         }
-        cout << "Close list length: " << close_.size() << endl;
+        //cout << "Close list length: " << close_.size() << endl;
     }
     return SearchState::SEARCH_STATE_SEARCHING;
 }
