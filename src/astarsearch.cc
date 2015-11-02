@@ -48,28 +48,28 @@ void AStarSearch::get_sucessors(){
         vector<int> vec(this->current_node_.state_);
         swap(vec[k+1],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, this->depth_, distance, k+1,"direita");
+        NodeState node(vec, this->current_node_.g_ + 1, distance, k+1,"direita");
         add_sucessor(node);
     }
     if (k-1 < this->n_*this->n_ && k-1 >= 0){
         vector<int> vec(this->current_node_.state_);
         swap(vec[k-1],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, this->depth_, distance, k-1,"esquerda");
+        NodeState node(vec, this->current_node_.g_ + 1, distance, k-1,"esquerda");
         add_sucessor(node);
     }
     if (k+this->n_ < this->n_*this->n_ && k+this->n_ >= 0){
         vector<int> vec(this->current_node_.state_);
         swap(vec[k+n_],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, this->depth_, distance, k+n_,"abaixo");
+        NodeState node(vec, this->current_node_.g_ + 1, distance, k+n_,"abaixo");
         add_sucessor(node);
     }
     if (k-this->n_ < this->n_*this->n_ && k-this->n_ >= 0){
         vector<int> vec(this->current_node_.state_);
         swap(vec[k-this->n_],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, this->depth_, distance, k-this->n_,"acima");
+        NodeState node(vec, this->current_node_.g_ + 1, distance, k-this->n_,"acima");
         add_sucessor(node);
     } 
     close_.insert(current_node_);
@@ -126,7 +126,6 @@ void AStarSearch::set_goal(NodeState goal){
 
 
 SearchState AStarSearch::search_step(){
-    cout << "Depth " << this->depth_ << endl; 
     if (!this->open_pq_.empty()){
         while (!this->open_pq_.empty()){
             current_node_ = this->open_pq_.top();
@@ -146,7 +145,7 @@ SearchState AStarSearch::search_step(){
         } else {
             get_sucessors();
         }
+        cout << "Close list length: " << close_.size() << endl;
     }
-    this->depth_++;
     return SearchState::SEARCH_STATE_SEARCHING;
 }
