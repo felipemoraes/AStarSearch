@@ -1,6 +1,10 @@
 .ignore
 .DS_Store
 
+*.xcodeproj/
+src/Project.xcodeproj/
+/Project.xcodeproj/
+*.build/
 
 # Compiled Object files
 *.slo
