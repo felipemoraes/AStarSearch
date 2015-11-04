@@ -10,16 +10,16 @@ AStarSearch::AStarSearch(NodeState start, NodeState goal, int n){
 }
 
 float AStarSearch::goal_distance_estimate(vector<int> state){
-   return hamming_distance(state);
+   return manhattan_distance(state);
 }
 
 float AStarSearch::manhattan_distance(vector<int> state){
     float distance = 0.0f;
     for(int i = 0; i < state.size(); ++i){
        int x1 = state[i]/n_;
-       int y1 = x1 - x1*n_;
+       int y1 = state[i] - x1*n_;
        int xs = i/n_;
-       int ys = xs - xs*n_;
+       int ys = i - xs*n_;
        distance += abs(xs-x1) + abs(ys-y1);
     }
     return distance;
@@ -72,44 +72,43 @@ void AStarSearch::get_sucessors(){
         NodeState node(vec, this->current_node_.g_ + 1, distance, k-this->n_,"acima");
         add_sucessor(node);
     } 
-    close_.insert(current_node_);
 }
 
 void AStarSearch::add_sucessor(NodeState node){
     node.parent_ = new NodeState(current_node_);
     auto it = this->open_.find(node);
-    if (it == this->open_.end()){
-        auto got = this->close_.find(node);
-        if (got == this->close_.end()){
-            
-            this->open_.insert(node);
-            this->open_pq_.push(node);
-        }
-    } else {
-        if (it->f_ > node.f_) {
+    if (it != this->open_.end()){
+        if (it->f_ > node.f_){
             this->open_.erase(node);
-            this->open_.insert(node);
-            this->open_pq_.push(node);
         }
     }
+    it = this->close_.find(node);
+    if (it != this->close_.end()) {
+        if (it->f_ > node.f_) {
+            this->close_.erase(node);
+        }
+    }
+    open_.insert(node);
+    open_pq_.push(node);
 }
 
 void AStarSearch::print_solution(){
-    cout << current_node_.label_  << " " << "Depth: " << current_node_.g_  << " ";
+    cout << current_node_.label_  << " " << "Depth: " << current_node_.g_  << " Heuristic:" << current_node_.h_ << " ";
     for (auto v: current_node_.state_){
         cout << v << " ";
     }
     cout << endl;
     NodeState *node = current_node_.parent_;
     while (node->label_ != "start"){
-        cout << node->label_ << " " << "Depth: " << node->g_  << " ";
+        cout << node->label_ << " " << "Depth: " << node->g_  << " " << "Heuristic: " << node->h_ << " " ;
         for (auto v : node->state_){
             cout << v << " ";
         }
         cout << endl;
         node = node->parent_;
     }
-    cout << node->label_ << " ";
+    cout << node->label_ << " Heuristic:";
+    cout << goal_distance_estimate(start_.state_) << " "; 
     for (auto v: node->state_){
         cout << v << " ";
     }
@@ -132,15 +131,12 @@ SearchState AStarSearch::search_step(){
             current_node_ = this->open_pq_.top();
             this->open_pq_.pop();
             auto it = this->close_.find(current_node_);
-            if (it != this->close_.end()){
-                if (this->open_pq_.empty() && !is_goal(current_node_)){
-                    return SearchState::SEARCH_STATE_FAILED;
-                }  
-            } else {
+            if (it == this->close_.end()){
                 break;
             }
         }
         this->open_.erase(current_node_);
+        close_.insert(current_node_);
         if (is_goal(current_node_)) {
             return SearchState::SEARCH_STATE_SUCCEEDED;
         } else {

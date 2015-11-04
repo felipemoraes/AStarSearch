@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include "astarsearch.h"
+#include "util.h"
 #include <sstream>
 
 using namespace std;
@@ -43,6 +44,19 @@ int main(int argc, char** argv){
         }
     } else {
          std::cout << "File not found" << std::endl;
+    }
+
+    vector<int> state_cp(start_state);
+    state_cp.erase(state_cp.begin()+blank_pos);
+    int inv = inversions_count(state_cp);
+    if ((n%2 ==1) && (inv% 2 == 0)) {
+    
+    } else if ((n%2==0) && ((inv + blank_pos/n )% 2)== 0){
+
+    } else {
+        cout << "Inversoes: " << inv << endl;
+        cout << "Sem solucao" << endl;
+        return 0;
     }
 
     for (int i = 0; i < n*n;++i){

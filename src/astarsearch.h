@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include <unordered_set>
+#include <set>
 #include <unordered_map>
 #include <cmath>
 #include "nodestate.h"
@@ -23,7 +24,7 @@ private:
     NodeState start_;
     NodeState goal_;
     NodeState current_node_;
-    priority_queue<NodeState,vector<NodeState>, HeapComparator> open_pq_;
+    priority_queue<NodeState,vector<NodeState>,HeapComparator > open_pq_;
     unordered_set<NodeState, hash_comp> open_;
     unordered_set<NodeState, hash_comp> close_;
     int depth_;

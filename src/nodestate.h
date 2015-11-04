@@ -56,14 +56,32 @@ struct hash_comp {
 
 class HeapComparator{
 public:
-    bool operator() (const NodeState &x, const NodeState &y ) const {
-        return x.f_ > y.f_;
+    bool operator () (const NodeState &x, const NodeState &y ) const {
+        if (x.f_ > y.f_) {
+            return true;
+        }
+        return false;
+
     }
 };
+
+
+
 
 inline bool operator == (NodeState const& lhs, NodeState const& rhs){
     return (lhs.state_ == rhs.state_);
 }
+
+
+/*
+inline bool operator>(const NodeState &lhs, const NodeState &rhs){
+    return (lhs.f_ > rhs.f_);
+}
+
+inline bool operator<(const NodeState &lhs, const NodeState &rhs){
+    return (lhs.f_ < rhs.f_);
+}
+*/
 
 class MapComparator{
 public:
