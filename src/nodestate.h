@@ -25,15 +25,14 @@ struct vec_comp {
 
 class NodeState {
 public:
-    NodeState *parent_;
     float g_;
     float h_;
     float f_;
     vector<int> state_;
     int blank_pos_;
-    string label_;
-    NodeState(): g_(0.0f),h_(0.0f),f_(0.0f),label_(""){}
-    NodeState(vector<int> state, float g, float h, int blank_pos, string label){
+    int label_;
+    NodeState(): g_(0.0f),h_(0.0f),f_(0.0f),label_(0){}
+    NodeState(vector<int> state, float g, float h, int blank_pos, int label){
         state_ = state;
         g_ = g;
         h_ = h;
@@ -72,16 +71,6 @@ inline bool operator == (NodeState const& lhs, NodeState const& rhs){
     return (lhs.state_ == rhs.state_);
 }
 
-
-/*
-inline bool operator>(const NodeState &lhs, const NodeState &rhs){
-    return (lhs.f_ > rhs.f_);
-}
-
-inline bool operator<(const NodeState &lhs, const NodeState &rhs){
-    return (lhs.f_ < rhs.f_);
-}
-*/
 
 class MapComparator{
 public:

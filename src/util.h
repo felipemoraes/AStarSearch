@@ -1,5 +1,9 @@
+#ifndef __util__
+#define __util__
+
 #include <stdio.h>
 #include <stdlib.h>
+#include "nodestate.h"
   
 int  _mergeSort(int arr[], int temp[], int left, int right);
 int merge(int arr[], int temp[], int left, int mid, int right);
@@ -53,4 +57,76 @@ int merge(int arr[], int temp[], int left, int mid, int right){
   return inv_count;
 }
 
+NodeState get_start_state(string infile, int& n){
+    int blank_pos = 0,i=0;
+
+    ifstream in(infile.c_str());
+
+    vector<int> start_state;
+    
+    if (in.is_open()){
+        string line;
+        getline(in,line);
+        n = stoi(line);
+        while (getline(in,line)){
+            stringstream ssin(line);
+            while (ssin.good()){
+                string tile;
+                ssin >> tile;
+                if (tile == "_"){
+                    start_state.push_back(0);
+                    blank_pos = i;
+                } else {
+                    start_state.push_back(stoi(tile));
+                }
+                i++;
+            }
+        }
+    } else {
+        std::cout << "File not found" << std::endl;
+    }
+    
+
+    NodeState start;
+    start.state_ = start_state;
+    start.blank_pos_ = blank_pos;
+    start.label_ = 0;
+    in.close();
+    return start;
+}
+
+
+NodeState get_goal_state(int n){
+    
+    NodeState goal;
+    
+    vector<int> goal_state;
+
+
+    for (int i = 0; i < n*n;++i){
+        goal_state.push_back(i);
+    }
+    
+    goal.state_ = goal_state;
+    goal.blank_pos_ = 0;
+    return goal;
+}
+
+    
+bool is_solvable(NodeState node, int n){
+    
+    vector<int> state_cp(node.state_);
+    state_cp.erase(state_cp.begin()+ node.blank_pos_);
+    int inv = inversions_count(state_cp);
+    if ((n%2 ==1) && (inv% 2 == 0)) {
+        return true;
+    } else if ((n%2==0) && ((inv + node.blank_pos_/n )% 2)== 0){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+#endif /* defined(__util__) */
 
