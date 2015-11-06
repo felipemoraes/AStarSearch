@@ -28,6 +28,7 @@ public:
     float g_;
     float h_;
     float f_;
+    NodeState *parent_;
     vector<int> state_;
     int blank_pos_;
     int label_;

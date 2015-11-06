@@ -29,7 +29,6 @@ private:
     priority_queue<NodeState,vector<NodeState>,HeapComparator >* open_pq_;
     unordered_set<NodeState, hash_comp>* open_;
     unordered_set<NodeState, hash_comp>* close_;
-    unordered_map<NodeState, NodeState, hash_comp>* came_from_;
     int depth_;
     int n_;
     float goal_distance_estimate(const vector<int> &state);

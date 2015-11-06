@@ -6,7 +6,6 @@ AStarSearch::AStarSearch(NodeState start, NodeState goal, int n){
     open_pq_ = new priority_queue<NodeState,vector<NodeState>,HeapComparator >();
     open_ = new unordered_set<NodeState, hash_comp>();
     close_ = new unordered_set<NodeState, hash_comp>();
-    came_from_ = new unordered_map<NodeState, NodeState, hash_comp>();
     this->open_->insert(start_);
     this->open_pq_->push(start_);
     this->depth_ = 1;
@@ -124,7 +123,7 @@ void AStarSearch::add_sucessor(NodeState &node, NodeState &current_node){
             close_->erase(node);
         }
     }
-    came_from_->insert(make_pair(node, current_node));
+    node.parent_ = &current_node;
     open_->insert(node);
     open_pq_->push(node);
 }
@@ -150,10 +149,10 @@ void AStarSearch::print_solution(NodeState &current_node){
     ofstream foutput("output.txt");
     vector<int> solution;
     solution.push_back(current_node.label_);
-    NodeState next = (*came_from_)[current_node];
-    while (next.label_ != 0){
-        solution.push_back(next.label_);
-        next = (*came_from_)[next];
+    NodeState *node = current_node.parent_;
+    while (node->label_ != 0){
+        solution.push_back(node->label_);
+        node = node->parent_;
     }
     reverse(solution.begin(),solution.end());
     foutput << solution.size() << endl;
@@ -167,22 +166,23 @@ void AStarSearch::print_solution(NodeState &current_node){
 
 SearchState AStarSearch::search_step(){
     if (!this->open_pq_->empty()){
-        NodeState current_node;
+        NodeState *current_node;
         while (!this->open_pq_->empty()){
-            current_node = open_pq_->top();
+            NodeState node = open_pq_->top();
             this->open_pq_->pop();
-            auto it = close_->find(current_node);
+            auto it = close_->find(node);
             if (it == close_->end()){
+                current_node = new NodeState(node);
                 break;
             }
         }
-        this->open_->erase(current_node);
-        close_->insert(current_node);
-        if (is_goal(current_node)) {
-            print_solution(current_node);
+        this->open_->erase(*current_node);
+        close_->insert(*current_node);
+        if (is_goal(*current_node)) {
+            print_solution(*current_node);
             return SearchState::SEARCH_STATE_SUCCEEDED;
         } else {
-            get_sucessors(current_node);
+            get_sucessors(*current_node);
         }
     }
     return SearchState::SEARCH_STATE_SEARCHING;
