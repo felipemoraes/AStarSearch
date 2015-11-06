@@ -11,7 +11,7 @@
 using namespace std;
 
 int main(int argc, char** argv){
-    int n;
+    int n = 1;
     string infile;
     if (argc < 2) {
         cout << "Usage: ./n_puzzle --infile [input_file]" << endl; 
@@ -43,6 +43,7 @@ int main(int argc, char** argv){
     gettimeofday(&t_end, NULL);
     execution_time = (t_end.tv_sec-t_start.tv_sec)*1000000;
     execution_time = (execution_time+(t_end.tv_usec-t_start.tv_usec))/1000000;
+    delete astarsearch;
     printf("%.5f\n", execution_time);
     return 0;
 }

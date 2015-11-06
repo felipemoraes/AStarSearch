@@ -10,12 +10,16 @@ int merge(int arr[], int temp[], int left, int mid, int right);
   
 int inversions_count(vector<int> arr){
     int array_size = arr.size();
+    int inv_counts;
     int *arr_ = (int *)malloc(sizeof(int)*array_size);
     for (int i = 0; i < array_size; ++i){
         arr_[i] = arr[i];
     }
     int *temp = (int *)malloc(sizeof(int)*array_size);
-    return _mergeSort(arr_, temp, 0, array_size - 1);
+    inv_counts = _mergeSort(arr_, temp, 0, array_size - 1);
+    free(temp);
+    free(arr_);
+    return inv_counts;
 }
   
 int _mergeSort(int arr[], int temp[], int left, int right){

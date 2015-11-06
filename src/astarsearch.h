@@ -33,8 +33,8 @@ private:
     int n_;
     float goal_distance_estimate(const vector<int> &state);
     bool is_goal(const NodeState &node);
-    void get_sucessors(NodeState &current_node);
-    void add_sucessor(NodeState &node, NodeState &current_node);
+    void get_sucessors(shared_ptr<NodeState> current_node);
+    void add_sucessor(NodeState &node, shared_ptr<NodeState> current_node);
     float manhattan_distance(const vector<int> &state);
     float hamming_distance(const vector<int> &state);
     float double_manhattan_distance(const vector<int> &state);

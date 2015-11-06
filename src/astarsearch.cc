@@ -13,17 +13,6 @@ AStarSearch::AStarSearch(NodeState start, NodeState goal, int n){
 }
 
 AStarSearch::~AStarSearch(){
-  //  for (auto node: *open_) {
-        //delete node.parent_;
-    //}
-    //for (auto node: *close_) {
-        //delete node.parent_;
-   // }
-//    while (!open_pq_->empty()) {
-//        NodeState *node = open_pq_->top();
-//        //delete node.parent_;
-//        open_pq_->pop();
-//    }
 }
 
 float AStarSearch::goal_distance_estimate(const vector<int> &state){
@@ -72,58 +61,57 @@ bool AStarSearch::is_goal(const NodeState &node){
 }
 
 
-void AStarSearch::get_sucessors(NodeState &current_node){
-    int k = current_node.blank_pos_;
+void AStarSearch::get_sucessors(shared_ptr<NodeState> current_node){
+    int k = current_node->blank_pos_;
     // Right
     if (((k+1)%n_) &&  k+1 < this->n_*this->n_ && k+1 >= 0){
-        vector<int> vec(current_node.state_);
+        vector<int> vec(current_node->state_);
         swap(vec[k+1],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, current_node.g_ + 1, distance, k+1,1);
+        NodeState node(vec, current_node->g_ + 1, distance, k+1,1);
         add_sucessor(node,current_node);
     }
     // Left
     if ((k%n_) && (k-1 < this->n_*this->n_) && (k-1 >= 0)){
-        vector<int> vec(current_node.state_);
+        vector<int> vec(current_node->state_);
         swap(vec[k-1],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, current_node.g_ + 1, distance, k-1,2);
+        NodeState node(vec, current_node->g_ + 1, distance, k-1,2);
         add_sucessor(node,current_node);
     }
     // Down
     if (k+this->n_ < this->n_*this->n_ && k+this->n_ >= 0){
-        vector<int> vec(current_node.state_);
+        vector<int> vec(current_node->state_);
         swap(vec[k+n_],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, current_node.g_ + 1, distance, k+n_,3);
+        NodeState node(vec, current_node->g_ + 1, distance, k+n_,3);
         add_sucessor(node,current_node);
     }
     // Up
     if (k-this->n_ < this->n_*this->n_ && k-this->n_ >= 0){
-        vector<int> vec(current_node.state_);
+        vector<int> vec(current_node->state_);
         swap(vec[k-this->n_],vec[k]);
         float distance = goal_distance_estimate(vec);
-        NodeState node(vec, current_node.g_ + 1, distance, k-this->n_,4);
+        NodeState node(vec, current_node->g_ + 1, distance, k-this->n_,4);
         add_sucessor(node,current_node);
     } 
 }
 
-void AStarSearch::add_sucessor(NodeState &node, NodeState &current_node){
+void AStarSearch::add_sucessor(NodeState &node, shared_ptr<NodeState> current_node){
     auto it = this->open_->find(node);
     if (it != this->open_->end()){
         if (it->f_ > node.f_){
             //delete node.parent_;
-            this->open_->erase(node);
+            this->open_->erase(*it);
         }
     }
     it = close_->find(node);
     if (it != close_->end()) {
         if (it->f_ > node.f_) {
-            //delete node.parent_;
-            close_->erase(node);
+            close_->erase(*it);
         }
     }
-    node.parent_ = &current_node;
+    node.parent_ = current_node;
     open_->insert(node);
     open_pq_->push(node);
 }
@@ -149,7 +137,7 @@ void AStarSearch::print_solution(NodeState &current_node){
     ofstream foutput("output.txt");
     vector<int> solution;
     solution.push_back(current_node.label_);
-    NodeState *node = current_node.parent_;
+    auto node = current_node.parent_;
     while (node->label_ != 0){
         solution.push_back(node->label_);
         node = node->parent_;
@@ -166,13 +154,13 @@ void AStarSearch::print_solution(NodeState &current_node){
 
 SearchState AStarSearch::search_step(){
     if (!this->open_pq_->empty()){
-        NodeState *current_node;
+        shared_ptr<NodeState> current_node;
         while (!this->open_pq_->empty()){
             NodeState node = open_pq_->top();
             this->open_pq_->pop();
             auto it = close_->find(node);
             if (it == close_->end()){
-                current_node = new NodeState(node);
+                current_node = make_shared<NodeState>(node);
                 break;
             }
         }
@@ -182,7 +170,7 @@ SearchState AStarSearch::search_step(){
             print_solution(*current_node);
             return SearchState::SEARCH_STATE_SUCCEEDED;
         } else {
-            get_sucessors(*current_node);
+            get_sucessors(current_node);
         }
     }
     return SearchState::SEARCH_STATE_SEARCHING;

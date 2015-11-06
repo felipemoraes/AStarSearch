@@ -6,7 +6,7 @@
 #include <stdlib.h>  // for size_t.
 #include <stdint.h>
 #include <utility>
-
+#include <memory>
 #ifndef __nodestate__
 #define __nodestate__
 
@@ -28,13 +28,14 @@ public:
     float g_;
     float h_;
     float f_;
-    NodeState *parent_;
+    shared_ptr<NodeState> parent_;
     vector<int> state_;
     int blank_pos_;
     int label_;
-    NodeState(): g_(0.0f),h_(0.0f),f_(0.0f),label_(0){}
+    NodeState(): g_(0.0f),h_(0.0f),f_(0.0f),parent_(0),label_(0){}
     NodeState(vector<int> state, float g, float h, int blank_pos, int label){
         state_ = state;
+        parent_ = NULL;
         g_ = g;
         h_ = h;
         f_ = g + h;
