@@ -13,6 +13,9 @@ AStarSearch::AStarSearch(NodeState start, NodeState goal, int n){
 }
 
 AStarSearch::~AStarSearch(){
+    delete open_;
+    delete open_pq_;
+    delete close_;
 }
 
 float AStarSearch::goal_distance_estimate(const vector<int> &state){
