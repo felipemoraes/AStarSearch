@@ -1,7 +1,7 @@
 Implementation of the A* algorithm in C++11 and N Puzzle problem. 
 - Compilation
   ./compile.sh
-- Executation
+- Execution
  ./execute.sh $infile
 
 
