@@ -37,7 +37,7 @@ private:
     void add_sucessor(NodeState &node, shared_ptr<NodeState> current_node);
     float manhattan_distance(const vector<int> &state);
     float hamming_distance(const vector<int> &state);
-    float double_manhattan_distance(const vector<int> &state);
+    float out_of_row_and_column(const vector<int> &state);
 public:
     AStarSearch(NodeState start, NodeState goal, int n);
     ~AStarSearch();

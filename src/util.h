@@ -131,6 +131,12 @@ bool is_solvable(NodeState node, int n){
     }
 }
 
+void write_no_solution(){
+    ofstream foutput("output.txt");
+    foutput << "Sem solução" << endl;
+    foutput.close();
+}
+
 
 #endif /* defined(__util__) */
 

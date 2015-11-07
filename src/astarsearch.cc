@@ -34,14 +34,19 @@ float AStarSearch::manhattan_distance(const vector<int> &state){
     return distance;
 }
 
-float AStarSearch::double_manhattan_distance(const vector<int> &state){
+float AStarSearch::out_of_row_and_column(const vector<int> &state){
     float distance = 0.0f;
     for(int i = 0; i < state.size(); ++i){
         int x1 = state[i]/n_;
         int y1 = state[i] - x1*n_;
         int xs = i/n_;
         int ys = i - xs*n_;
-        distance += abs(xs-x1) + abs(ys-y1);
+        if (xs!=x1) {
+            distance++;
+        }
+        if (ys != y1) {
+            distance++;
+        }
     }
     return distance;
 }

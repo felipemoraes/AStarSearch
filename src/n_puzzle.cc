@@ -26,7 +26,7 @@ int main(int argc, char** argv){
     }
     NodeState start = get_start_state(infile,n);
     if (!is_solvable(start,n)) {
-        cout << "Sem solucao" << endl;
+        write_no_solution();
         return 0;
     } 
     NodeState goal = get_goal_state(n);
