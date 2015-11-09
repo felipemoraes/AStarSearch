@@ -144,6 +144,11 @@ string get_label(const int n){
 void AStarSearch::print_solution(NodeState &current_node){
     ofstream foutput("output.txt");
     vector<int> solution;
+    if (current_node.label_ == 0) {
+        foutput << 0 << endl;
+        foutput.close();
+        return;
+    }
     solution.push_back(current_node.label_);
     auto node = current_node.parent_;
     while (node->label_ != 0){
